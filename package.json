@@ -1,0 +1,51 @@
+{
+  "name": "make-symlinks",
+  "version": "0.1.0",
+  "description": "Create symbolic link (symlinks) using glob",
+  "license": "MIT",
+  "repository": "iguntur/make-symlinks",
+  "files": [
+    "index.js"
+  ],
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "author": {
+    "name": "Guntur Poetra",
+    "email": "poetra.guntur@gmail.com",
+    "url": "http://guntur.starmediateknik.com"
+  },
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "keywords": [
+    "create",
+    "glob",
+    "link",
+    "links",
+    "ln",
+    "make",
+    "symbolic",
+    "symlinks",
+    "tool",
+    "unlink",
+    "utility",
+    "wildcard"
+  ],
+  "dependencies": {
+    "del": "^2.2.2",
+    "globby": "^6.0.0",
+    "parse-filepath": "^1.0.1",
+    "path-exists": "^2.0.0",
+    "pify": "^2.3.0",
+    "pinkie-promise": "^2.0.1"
+  },
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "fs-extra": "^0.30.0",
+    "is-arr": "^1.0.4",
+    "is-symbolic-link": "^1.0.1",
+    "tempfile": "^1.1.1",
+    "xo": "^0.16.0"
+  }
+}
