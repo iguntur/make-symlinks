@@ -20,8 +20,6 @@ module.exports = function (patterns, destPath, opts) {
 	opts = opts || {};
 	destPath = path.resolve('', destPath);
 
-	var symlinks = {};
-
 	var force = opts.force;
 	delete opts.force;
 
@@ -34,23 +32,23 @@ module.exports = function (patterns, destPath, opts) {
 
 	return globby(patterns, opts).then(function (paths) {
 		return Promise.all(paths.map(function (targetPath) {
-			symlinks.target = path.resolve(opts.cwd || '', targetPath);
-			symlinks.dest = path.join(destPath, parsePath(targetPath).basename);
+			var target = path.resolve(opts.cwd || '', targetPath);
+			var dest = path.join(destPath, parsePath(targetPath).basename);
 
 			if (!force) {
-				safeRun(symlinks.dest);
+				safeRun(dest);
 			}
 
 			if (dryRun) {
-				return Promise.resolve(symlinks);
+				return Promise.resolve({target: target, path: dest});
 			}
 
-			if (pathExists.sync(symlinks.dest)) {
-				del.sync(symlinks.dest);
+			if (pathExists.sync(dest)) {
+				del.sync(dest);
 			}
 
-			return fssymlink(symlinks.target, symlinks.dest).then(function () {
-				return symlinks;
+			return fssymlink(target, dest).then(function () {
+				return {target: target, path: dest};
 			});
 		}));
 	});
@@ -59,8 +57,6 @@ module.exports = function (patterns, destPath, opts) {
 module.exports.sync = function (patterns, destPath, opts) {
 	opts = opts || {};
 	destPath = path.resolve('', destPath);
-
-	var symlinks = {};
 
 	var force = opts.force;
 	delete opts.force;
@@ -73,21 +69,21 @@ module.exports.sync = function (patterns, destPath, opts) {
 	}
 
 	return globby.sync(patterns, opts).map(function (targetPath) {
-		symlinks.target = path.resolve(opts.cwd || '', targetPath);
-		symlinks.dest = path.join(destPath, parsePath(targetPath).basename);
+		var target = path.resolve(opts.cwd || '', targetPath);
+		var dest = path.join(destPath, parsePath(targetPath).basename);
 
 		if (!force) {
-			safeRun(symlinks.dest);
+			safeRun(dest);
 		}
 
 		if (!dryRun) {
-			if (pathExists.sync(symlinks.dest)) {
-				del.sync(symlinks.dest);
+			if (pathExists.sync(dest)) {
+				del.sync(dest);
 			}
 
-			fs.symlinkSync(symlinks.target, symlinks.dest);
+			fs.symlinkSync(target, dest);
 		}
 
-		return symlinks;
+		return {target: target, path: dest};
 	});
 };
