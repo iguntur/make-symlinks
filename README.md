@@ -47,6 +47,8 @@ Returns a promise for an array object of symlinks target and path.
 
 ### makeSymlinks.sync(target, path, [options])
 
+Returns an array of symlinks target and path.
+
 - #### target
     Type: `string`, `array`<br>
     See supported minimatch [patterns](https://github.com/isaacs/minimatch#usage).
