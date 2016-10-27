@@ -81,6 +81,12 @@ Returns an array of symlinks target and path.
     ```
 
 
+## Related
+
+- [del-symlinks](https://github.com/iguntur/del-symlinks) - Delete symlinks using glob.
+- [get-symlinks](https://github.com/iguntur/get-symlinks) - Get all symbolic link in directory
+
+
 ## License
 
 MIT © [Guntur Poetra](http://guntur.starmediateknik.com)
