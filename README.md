@@ -1,4 +1,4 @@
-# make-symlinks [![Build Status](https://travis-ci.org/iguntur/make-symlinks.svg?branch=master)](https://travis-ci.org/iguntur/make-symlinks) [![npm](https://img.shields.io/npm/v/make-symlinks.svg?style=flat-square)](https://npmjs.com/package/make-symlinks)
+# make-symlinks [![Build Status](https://travis-ci.org/iguntur/make-symlinks.svg?branch=master)](https://travis-ci.org/iguntur/make-symlinks)
 
 > Create symbolic link (symlinks) using glob
 
