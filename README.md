@@ -5,7 +5,7 @@
 
 ## Install
 
-```
+``` bash
 $ npm install --save make-symlinks
 ```
 
