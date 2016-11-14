@@ -83,8 +83,9 @@ Returns an array of symlinks target and path.
 
 ## Related
 
+- [ln-cli](https://github.com/iguntur/ln-cli) - Create or delete symbolic link using glob on CLI.
 - [del-symlinks](https://github.com/iguntur/del-symlinks) - Delete symlinks using glob.
-- [get-symlinks](https://github.com/iguntur/get-symlinks) - Get all symbolic link in directory
+- [get-symlinks](https://github.com/iguntur/get-symlinks) - Get all symbolic link in directory.
 
 
 ## License
