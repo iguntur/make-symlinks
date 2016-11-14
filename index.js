@@ -12,7 +12,7 @@ var fssymlink = pify(fs.symlink, Promise);
 
 function safeRun(fp) {
 	if (pathExists.sync(fp)) {
-		throw new Error(fp + ' is already exists. Can be with `force` options');
+		throw new Error(fp + ' has already exists. Can be with `force` options');
 	}
 }
 
