@@ -1,6 +1,6 @@
 {
   "name": "make-symlinks",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Create symbolic link (symlinks) using glob",
   "license": "MIT",
   "repository": "iguntur/make-symlinks",
