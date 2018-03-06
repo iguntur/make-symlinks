@@ -16,7 +16,8 @@
 		"url": "https://github.com/iguntur"
 	},
 	"scripts": {
-		"test": "xo && nyc ava",
+		"test": "xo && ava",
+		"test:cover": "nyc ava",
 		"test:report": "nyc report --reporter=html ava"
 	},
 	"keywords": [
