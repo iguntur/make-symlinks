@@ -12,7 +12,7 @@ var fsP = {
 	symlink: pify(fs.symlink, Promise)
 };
 
-const symlinkType = os.platform() === 'win32' ? 'junction' : 'dir';
+const symlinkType = os.platform() === 'win32' ? 'junction' : undefined;
 
 function abortIfFileExists(fp) {
 	if (fs.existsSync(fp)) {
