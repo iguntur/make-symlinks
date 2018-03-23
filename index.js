@@ -1,5 +1,6 @@
 'use strict';
 var fs = require('fs');
+var os = require('os');
 var path = require('path');
 var del = require('del');
 var pify = require('pify');
@@ -10,6 +11,8 @@ var Promise = global.Promise || pinkiePromise;
 var fsP = {
 	symlink: pify(fs.symlink, Promise)
 };
+
+const symlinkType = os.platform() === 'win32' ? 'junction' : 'dir';
 
 function abortIfFileExists(fp) {
 	if (fs.existsSync(fp)) {
@@ -55,7 +58,7 @@ module.exports = function (patterns, destPath, opts) {
 					return Promise.resolve(fs.existsSync(dest) ? del(dest, strategy.del) : null);
 				})
 				.then(function () {
-					return fsP.symlink(target, dest);
+					return fsP.symlink(target, dest, symlinkType);
 				})
 				.then(function () {
 					return {target: target, path: dest};
@@ -96,7 +99,7 @@ module.exports.sync = function (patterns, destPath, opts) {
 				del.sync(dest, strategy.del);
 			}
 
-			fs.symlinkSync(target, dest);
+			fs.symlinkSync(target, dest, symlinkType);
 		}
 
 		return {target: target, path: dest};
