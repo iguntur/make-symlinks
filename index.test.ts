@@ -1,13 +1,23 @@
 import fs from 'fs';
 import path from 'path';
-import test from 'ava';
+import ava, {TestInterface, ExecutionContext} from 'ava';
 import pify from 'pify';
-import tempfile from 'tempfile';
+import tempy from 'tempy';
 import isSymbolicLink from 'is-symbolic-link';
-import fn from './';
+import fn from '.';
 
-function symlinkExists(t, paths) {
-	[].concat(paths).forEach(pth => {
+interface TestContext {
+	symlinkPath: string;
+	fixturePath: string;
+}
+
+const test = ava as TestInterface<TestContext>;
+const fsP = {
+	readdir: pify(fs.readdir)
+};
+
+function symlinkExists(t: ExecutionContext<TestContext>, paths: string[]) {
+	paths.forEach(pth => {
 		pth = path.join(t.context.symlinkPath, pth);
 		const fileExists = fs.existsSync(pth);
 		t.true(fileExists);
@@ -15,8 +25,8 @@ function symlinkExists(t, paths) {
 	});
 }
 
-function symlinkNotExists(t, paths) {
-	[].concat(paths).forEach(pth => {
+function symlinkNotExists(t: ExecutionContext<TestContext>, paths: string[]) {
+	paths.forEach(pth => {
 		pth = path.join(t.context.symlinkPath, pth);
 		const fileExists = fs.existsSync(pth);
 		t.false(fileExists);
@@ -24,13 +34,14 @@ function symlinkNotExists(t, paths) {
 }
 
 test.beforeEach(t => {
-	t.context.symlinkPath = tempfile();
-	t.context.fixturePath = path.resolve(__dirname, 'fixtures');
-	fs.mkdirSync(t.context.symlinkPath);
+	t.context.symlinkPath = tempy.directory();
+	t.context.fixturePath = path.resolve(process.cwd(), 'fixtures');
 });
 
-test('async: throws an error when path doesn\'t exist', t => {
-	t.throws(() => fn('./fixtures/*', 'unknown-path'), Error);
+test('async: throws an error when path doesn\'t exist', async t => {
+	await t.throwsAsync(async () => {
+		await fn('./fixtures/*', 'unknown-path');
+	}, {instanceOf: Error});
 });
 
 test('async: dryRun options', async t => {
@@ -48,13 +59,13 @@ test('async: dryRun options', async t => {
 		t.true(new RegExp(t.context.symlinkPath).test(o.path));
 	});
 
-	const x = await pify(fs.readdir, Promise)(t.context.symlinkPath);
+	const x = await fsP.readdir(t.context.symlinkPath);
 	t.true(x.length === 0);
 });
 
 test('async: create symlinks recursive, except `.dot.txt`', async t => {
 	const results = await fn('fixtures/**/*.txt', t.context.symlinkPath);
-	const x = await pify(fs.readdir, Promise)(t.context.symlinkPath);
+	const x = await fsP.readdir(t.context.symlinkPath);
 	t.true(results.length === 3);
 	t.true(x.length === 3);
 	symlinkExists(t, ['foo.txt', 'bar.txt', 'baz.txt']);
@@ -70,8 +81,8 @@ test('async: create symlinks recursive, except `.dot.txt` - with options {cwd}',
 
 test('async: create symlinks not recursive, except `.dot.txt`', async t => {
 	const results = await fn(path.resolve(t.context.fixturePath, '*'), t.context.symlinkPath);
-	t.true(results.length === 3);
-	symlinkExists(t, ['foo.txt', 'bar.txt', 'folders']);
+	t.true(results.length === 2);
+	symlinkExists(t, ['foo.txt', 'bar.txt']);
 	symlinkNotExists(t, ['.dot.txt', 'baz.txt', 'a.js']);
 });
 
@@ -84,8 +95,9 @@ test('async: create symlinks recursive, include `.dot.txt`', async t => {
 
 test('async: throws an error when symlinks exist', async t => {
 	await fn('fixtures/*', t.context.symlinkPath);
-	const err = await t.throws(fn(['fixtures/*'], t.context.symlinkPath), Error);
-	t.true(/`force` options/.test(err.message));
+	await t.throwsAsync(async () => {
+		await fn(['fixtures/*'], t.context.symlinkPath)
+	}, {instanceOf: Error, message: /'force' options/});
 });
 
 test('async: force options', async t => {
@@ -103,7 +115,7 @@ test('async: force options', async t => {
 test('sync: throws an error when path doesn\'t exist', t => {
 	t.throws(() => {
 		fn.sync('*', 'unknown-path', {cwd: t.context.fixturePath});
-	}, Error);
+	}, {instanceOf: Error});
 });
 
 test('sync: dryRun options', t => {
@@ -134,8 +146,8 @@ test('sync: create symlinks recursive, except `.dot.txt`', t => {
 
 test('sync: create symlinks not recursive, except `.dot.txt`', t => {
 	const results = fn.sync('*', t.context.symlinkPath, {cwd: t.context.fixturePath});
-	t.true(results.length === 3);
-	symlinkExists(t, ['foo.txt', 'bar.txt', 'folders']);
+	t.true(results.length === 2);
+	symlinkExists(t, ['foo.txt', 'bar.txt']);
 	symlinkNotExists(t, ['.dot.txt', 'baz.txt', 'a.js']);
 });
 
@@ -148,17 +160,17 @@ test('sync: create symlinks recursive, include `.dot.txt`', t => {
 
 test('sync: throws an error when symlinks exist', t => {
 	fn.sync('./fixtures/*', t.context.symlinkPath);
-	t.throws(() => fn.sync('./fixtures/*', t.context.symlinkPath), Error);
+	t.throws(() => fn.sync('./fixtures/*', t.context.symlinkPath), {instanceOf: Error});
 });
 
 test('sync: force options', t => {
 	fn.sync('./fixtures/*', t.context.symlinkPath);
-	symlinkExists(t, ['foo.txt', 'bar.txt', 'folders']);
+	symlinkExists(t, ['foo.txt', 'bar.txt']);
 	symlinkNotExists(t, ['.dot.txt', 'baz.txt', 'a.js']);
 
 	fn.sync('./fixtures/**/*.{txt,js}', t.context.symlinkPath, {
 		force: true
 	});
-	symlinkExists(t, ['foo.txt', 'bar.txt', 'baz.txt', 'a.js', 'folders']);
+	symlinkExists(t, ['foo.txt', 'bar.txt', 'baz.txt', 'a.js']);
 	symlinkNotExists(t, ['.dot.txt']);
 });

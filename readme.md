@@ -1,10 +1,13 @@
 # make-symlinks
-[![Build Status](https://travis-ci.org/iguntur/make-symlinks.svg?branch=master)](https://travis-ci.org/iguntur/make-symlinks)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-1e9eff.svg)](http://makeapullrequest.com)
 
-> Create symbolic link (symlink) using glob
+[![Travis CI](https://img.shields.io/travis/iguntur/make-symlinks.svg?style=flat-square)](https://travis-ci.org/iguntur/make-symlinks)
+[![node](https://img.shields.io/node/v/make-symlinks.svg?style=flat-square)](#)
+[![npm](https://img.shields.io/npm/v/make-symlinks.svg?style=flat-square)](https://www.npmjs.org/package/make-symlinks)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-1e9eff.svg?style=flat-square)](http://makeapullrequest.com)
 
+> Create symbolic link (file symlink) using glob
+
+---
 
 ## Install
 
@@ -36,49 +39,55 @@ symlinks.forEach(symlink => {
 
 ## API
 
-### makeSymlinks(patterns, path, [options])
+### makeSymlinks(`patterns`, `path`, `[options]`)
 
-Returns a promise for an array object of symlinks patterns and path.
+- Params:
+    - `patterns`: `<string | string[]>` _(required)_ - The source files.
+    - `path`: `string` _(required)_ - The directory an output of symlink(s).
+    - `options`: [`<Options>`](#options)
+- Returns: `<Promise<object>>` - Returns a promise for an array object of symlinks patterns and path.
 
-### makeSymlinks.sync(patterns, path, [options])
+### makeSymlinks.sync(`patterns`, `path`, `[options]`)
 
-Returns an array of symlinks patterns and path.
+- Params:
+    - `patterns`: `<string | string[]>` _(required)_ - The source files.
+    - `path`: `string` _(required)_ - The directory an output of symlink(s).
+    - `options`: [`<Options>`](#options)
+- Returns: `<Promise<object>>` - Returns an array object of symlinks patterns and path.
 
-- __patterns__: `string | Array<string>`
 
-    Source path or target of symlink(s).
+#### Options
 
-    - See supported minimatch [patterns](https://github.com/isaacs/minimatch#usage).
-    - [Quick globbing pattern overview](https://github.com/sindresorhus/multimatch#globbing-patterns).
+See all supported [`globby`](https://github.com/sindresorhus/globby#options) options.
 
-- __path__: `string`
+- `cwd`: `string` _(optional)_ - The source files to resolve from.
+    - Default: `process.cwd()`
+- `force`: `boolean` _(optional)_ - Delete symlink if exists.
+    - Default: `false`
+- `dryRun`: `boolean` _(optional)_ - See what would be created symlinks.
+    - Default: `false`
 
-    The directory an output of symlink(s).
+**Example**
+```js
+const options = {
+    cwd: process.env.HOME,
+    dryRun: true
+};
 
-- __options__: `object`
-
-    See the `node-glob` [options](https://github.com/isaacs/node-glob#options).
-
-    | Property | Type       | Default  | Description |
-    | -------- | ---------- | -------- | ----------- |
-    | `force`  | `boolean`  | `false`  | Delete symlink if exists. |
-    | `dryRun` | `boolean`  | `false`  | See what would be created symlinks. |
-
-    __example__
-
-    ```js
-    makeSymlinks('/path/to/files/*', '/path/symlinks/dest', {dryRun: true}).then(symlinks => {
-        symlinks.forEach(symlink => {
-            console.log(symlink.path, '→', symlink.target);
-        });
+makeSymlinks('**/*', '/path/symlinks/dest', options).then(symlinks => {
+    symlinks.forEach(symlink => {
+        console.log(symlink.path, '→', symlink.target);
     });
-    ```
+});
+```
+
+
 
 ## Related
 
 - [ln-cli](https://github.com/iguntur/ln-cli) - Create or delete symbolic link using glob on CLI.
 - [del-symlinks](https://github.com/iguntur/del-symlinks) - Delete symlinks using glob.
-- [get-symlinks](https://github.com/iguntur/get-symlinks) - Get all symbolic link in directory.
+- [get-symlinks](https://github.com/iguntur/get-symlinks) - Get all symbolic link (file symlinks) using glob.
 
 
 ## License
