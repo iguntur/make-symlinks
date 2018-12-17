@@ -19,6 +19,7 @@
 		"url": "https://github.com/iguntur"
 	},
 	"scripts": {
+		"prepublishOnly": "npm run build:release",
 		"clean": "rm -rf dist",
 		"build": "npm run clean && tsc",
 		"build:release": "npm run test && rm -rf dist/*.test.*",
