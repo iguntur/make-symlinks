@@ -42,16 +42,16 @@ symlinks.forEach(symlink => {
 ### makeSymlinks(`patterns`, `path`, `[options]`)
 
 - Params:
-    - `patterns`: `<string | string[]>` _(required)_ - The source files.
-    - `path`: `string` _(required)_ - The directory an output of symlink(s).
+    - `patterns`: `<string | string[]>` _(required)_ - The source files. See [`globby`](https://github.com/sindresorhus/globby#patterns) supported patterns.
+    - `path`: `<string>` _(required)_ - The directory an output of symlink(s).
     - `options`: [`<Options>`](#options)
 - Returns: `<Promise<object>>` - Returns a promise for an array object of symlinks patterns and path.
 
 ### makeSymlinks.sync(`patterns`, `path`, `[options]`)
 
 - Params:
-    - `patterns`: `<string | string[]>` _(required)_ - The source files.
-    - `path`: `string` _(required)_ - The directory an output of symlink(s).
+    - `patterns`: `<string | string[]>` _(required)_ - The source files. See [`globby`](https://github.com/sindresorhus/globby#patterns) supported patterns.
+    - `path`: `<string>` _(required)_ - The directory an output of symlink(s).
     - `options`: [`<Options>`](#options)
 - Returns: `<Promise<object>>` - Returns an array object of symlinks patterns and path.
 
@@ -60,11 +60,11 @@ symlinks.forEach(symlink => {
 
 See all supported [`globby`](https://github.com/sindresorhus/globby#options) options.
 
-- `cwd`: `string` _(optional)_ - The source files to resolve from.
+- `cwd`: `<string>` _(optional)_ - The source files to resolve from.
     - Default: `process.cwd()`
-- `force`: `boolean` _(optional)_ - Delete symlink if exists.
+- `force`: `<boolean>` _(optional)_ - Delete symlink if exists.
     - Default: `false`
-- `dryRun`: `boolean` _(optional)_ - See what would be created symlinks.
+- `dryRun`: `<boolean>` _(optional)_ - See what would be created symlinks.
     - Default: `false`
 
 **Example**
